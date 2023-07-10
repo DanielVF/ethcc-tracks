@@ -80,6 +80,11 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     }
 
+    .container {
+        margin: 0px auto;
+        max-width: 1500px;
+    }
+
     a {
         color: #000;
     }
@@ -95,48 +100,52 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
     }
 </style>
 
-<h1 class="title">EthCC Talk Schedule</h1>
+<body>
+    <div class="container">
+        <h1 class="title">EthCC Talk Schedule</h1>
 
-<p class="author">By <a href="https://twitter.com/danielvf">DanielVF</a>
-    of <a href="https://www.oeth.com">Origin Protocol</a>
-</p>
+        <p class="author">By <a href="https://twitter.com/danielvf">DanielVF</a>
+            of <a href="https://www.oeth.com">Origin Protocol</a>
+        </p>
 
-<table style="min-width: 1100px;">
-    <?php $last_day = "" ?>
-    <?php $last_room = "" ?>
-    <?php foreach($events as $event){?>
-    <?php if($room_order[$event->Room]>50){ continue; }?>
-    <?php if($event->confday != $last_day) {
+        <table style="min-width: 1100px;">
+            <?php $last_day = "" ?>
+            <?php $last_room = "" ?>
+            <?php foreach($events as $event){?>
+            <?php if($room_order[$event->Room]>50){ continue; }?>
+            <?php if($event->confday != $last_day) {
         $last_day = $event->confday;
     ?>
-    <tr>
-        <td colspan="4">
-            <h1><?=htmlspecialchars($event->Date)?></h1>
-        </td>
-    </tr>
-    <tr>
-        <?php }?>
+            <tr>
+                <td colspan="4">
+                    <h1><?=htmlspecialchars($event->Date)?></h1>
+                </td>
+            </tr>
+            <tr>
+                <?php }?>
 
 
-        <?php if($event->Room != $last_room) {
-        $last_room = $event->Room;
-    ?>
-        <td style="width:200px; position:relative; height: <?=8 * 60 * $px_per_minute?>px;">
-            <h4><?=htmlspecialchars($event->Room)?></h4>
-            <?php }?>
+                <?php if($event->Room != $last_room) {
+                    $last_room = $event->Room;
+                ?>
+                <td style="width:200px; position:relative; height: <?=8 * 60 * $px_per_minute?>px;">
+                    <h4><?=htmlspecialchars($event->Room)?></h4>
+                    <?php }?>
 
 
 
-            <div class="event"
-                style="min-height:<?=((int)$event->Time) * $px_per_minute?>px; top: <?=$event->start_minutes * $px_per_minute?>px;">
-                <div class="loc"><?=$event->stage_code?></div>
-                <div class="time">
-                    <?=$event->start_hour > 12 ? $event->start_hour%12 : $event->start_hour?>:<?=($event->start_minute > 9) ? $event->start_minute:('0'.$event->start_minute)?><?=$event->start_hour > 11 ? 'pm' : 'am'?>
-                </div>
-                <span class="title"><?=htmlspecialchars($event->Title)?></span><br>
-                <?=htmlspecialchars($event->speakers)?>
-            </div>
-            <?php } ?>
-        </td>
-    </tr>
-</table>
+                    <div class="event"
+                        style="min-height:<?=((int)$event->Time) * $px_per_minute?>px; top: <?=$event->start_minutes * $px_per_minute?>px;">
+                        <div class="loc"><?=$event->stage_code?></div>
+                        <div class="time">
+                            <?=$event->start_hour > 12 ? $event->start_hour%12 : $event->start_hour?>:<?=($event->start_minute > 9) ? $event->start_minute:('0'.$event->start_minute)?><?=$event->start_hour > 11 ? 'pm' : 'am'?>
+                        </div>
+                        <span class="title"><?=htmlspecialchars($event->Title)?></span><br>
+                        <?=htmlspecialchars($event->speakers)?>
+                    </div>
+                    <?php } ?>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>

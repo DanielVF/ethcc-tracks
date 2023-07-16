@@ -61,6 +61,16 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
         width: 90%;
     }
 
+    .event.selected {
+        background: #d4abf6;
+        border: solid 1px #333;
+        padding: 3px;
+        box-shadow: 1px 1px 1px #ccc;
+    }
+    .event.selected .time{
+        color: #ffecfc;
+    }
+
     .time {
         color: #999;
         text-align: right;
@@ -134,13 +144,13 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
 
 
 
-                    <div class="event"
+                    <div id="e-<?=sha1($event->speakers."|".$event->Title)?>" class="event"
                         style="min-height:<?=((int)$event->Time) * $px_per_minute?>px; top: <?=$event->start_minutes * $px_per_minute?>px;">
                         <div class="loc"><?=$event->stage_code?></div>
                         <div class="time">
                             <?=$event->start_hour > 12 ? $event->start_hour%12 : $event->start_hour?>:<?=($event->start_minute > 9) ? $event->start_minute:('0'.$event->start_minute)?><?=$event->start_hour > 11 ? 'pm' : 'am'?>
                         </div>
-                        <span class="title"><?=htmlspecialchars($event->Title)?></span><br>
+                        <div class="title"><?=htmlspecialchars($event->Title)?></div>
                         <?=htmlspecialchars($event->speakers)?>
                     </div>
                     <?php } ?>
@@ -149,3 +159,38 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
         </table>
     </div>
 </body>
+<script>
+let selections = JSON.parse(window.localStorage.getItem('actives') || '{}')
+document.body.ontouch = document.body.onclick = function(evt){
+  let event;
+  if(evt.target == null || !evt.target.getAttribute('class')){
+    return
+  }
+  if(evt.target.getAttribute('class').includes("event")){
+    event = evt.target
+  } else if(evt.target.parentNode.getAttribute('class').includes("event")) {
+    event = evt.target.parentNode
+  } else {
+    return
+  }
+
+  const oldClass = event.getAttribute('class')
+  const key = event.getAttribute('id')
+  if(oldClass.includes("selected")){
+    event.setAttribute('class', oldClass.replace(' selected',''))
+    selections[key] = false
+    window.localStorage.setItem('actives', JSON.stringify(selections))
+  }else{
+    event.setAttribute('class', oldClass + ' selected')
+    selections[key] = true
+    window.localStorage.setItem('actives', JSON.stringify(selections))
+  }
+
+}
+for(const event of document.querySelectorAll(".event")){
+  if(selections[event.getAttribute('id')]){
+    console.log("bo")
+    event.setAttribute('class', event.getAttribute('class') + ' selected')
+  }
+}
+</script>

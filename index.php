@@ -170,7 +170,7 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
                 </td>
             </tr>
         </table>
-        <div id="timebar">.</div>
+        <div id="timebar" style="min-width: 1100px;">.</div>
     </div>
 </body>
 <script>

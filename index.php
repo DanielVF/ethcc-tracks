@@ -114,11 +114,12 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
     }
 
     #timebar {
-        height: 4px;
+        height: 10px;
         background: red;
         position: absolute;
         top: 942px;
-        width: 100%;
+        width: 105%;
+        margin-left: -3%;
         z-index: -1;
     }
 </style>
@@ -220,7 +221,7 @@ const getDateStuff = function(time){
   }
   const dayEvent = firstEvents[confDay]
   window.dayEvent = dayEvent
-  const dayOffset = dayEvent.offsetParent.offsetParent.offsetTop + dayEvent.offsetParent.offsetTop + 33
+  const dayOffset = dayEvent.offsetParent.offsetParent.offsetTop + dayEvent.offsetParent.offsetTop + 28
   console.log(
     dayEvent.offsetParent.offsetParent.offsetTop,
     dayEvent.offsetParent.offsetTop,
@@ -237,8 +238,9 @@ const timebarUpdate = function(){
   let now = Math.floor((new Date()).getTime() / 1000)
   let stuff = getDateStuff(now+0)
   if(stuff==null){
-    timebar.style.top = "-9999px"
+    timebar.style.display = "none"
   }
+  timebar.style.display = "block"
   timebar.style.top = (stuff.dayOffset + stuff.daySeconds * <?=$px_per_minute?> / 60)+'px';
 }
 timebarUpdate()

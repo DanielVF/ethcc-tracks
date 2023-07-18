@@ -39,7 +39,9 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
 
 ?>
 
-
+<html>
+<head>
+    <title>EthCC 2023 Talk Schedule</title>
 <style>
     td {
         vertical-align: top;
@@ -83,6 +85,7 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
         text-align: right;
         font-size: 0.9em;
         color: #ccc;
+        text-shadow: 2px 2px 2px #eee;
     }
 
     body {
@@ -93,6 +96,7 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
     .container {
         margin: 0px auto;
         max-width: 1500px;
+        position: relative;
     }
 
     a {
@@ -108,8 +112,17 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
         font-size: 14px;
         margin-top: -20px;
     }
-</style>
 
+    #timebar {
+        height: 4px;
+        background: red;
+        position: absolute;
+        top: 942px;
+        width: 100%;
+        z-index: -1;
+    }
+</style>
+</head>
 <body>
     <div class="container">
         <h1 class="title">EthCC Talk Schedule</h1>
@@ -157,10 +170,12 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
                 </td>
             </tr>
         </table>
+        <div id="timebar">.</div>
     </div>
 </body>
 <script>
 let selections = JSON.parse(window.localStorage.getItem('actives') || '{}')
+// Click events
 document.body.ontouch = document.body.onclick = function(evt){
   let event;
   if(evt.target == null || !evt.target.getAttribute('class')){
@@ -187,10 +202,45 @@ document.body.ontouch = document.body.onclick = function(evt){
   }
 
 }
+// Show events
 for(const event of document.querySelectorAll(".event")){
   if(selections[event.getAttribute('id')]){
-    console.log("bo")
     event.setAttribute('class', event.getAttribute('class') + ' selected')
   }
 }
+// Timebar
+let faketime = 100
+const getDateStuff = function(time){
+  const firstEvents = document.querySelectorAll("tr td:first-child .event:nth-child(2)")
+  const confTime = time - Math.floor((new Date(Date.UTC(2023,6,17,8,0,0))).getTime() / 1000)
+  const confDay = Math.floor(confTime / (24 * 60 * 60))
+  const daySeconds = confTime % (24 * 60 * 60)
+  if(daySeconds > 8*60*60 || confDay >= 4 || confDay < 0){
+    return null;
+  }
+  const dayEvent = firstEvents[confDay]
+  window.dayEvent = dayEvent
+  const dayOffset = dayEvent.offsetParent.offsetParent.offsetTop + dayEvent.offsetParent.offsetTop + 33
+  console.log(
+    dayEvent.offsetParent.offsetParent.offsetTop,
+    dayEvent.offsetParent.offsetTop,
+    dayEvent.offsetTop
+  )
+  console.log(dayEvent.offsetTop)
+  return {
+    daySeconds: daySeconds,
+    dayOffset: dayOffset
+  }
+}
+const timebarUpdate = function(){
+  const timebar = document.getElementById('timebar')
+  let now = Math.floor((new Date()).getTime() / 1000)
+  let stuff = getDateStuff(now+0)
+  if(stuff==null){
+    timebar.style.top = "-9999px"
+  }
+  timebar.style.top = (stuff.dayOffset + stuff.daySeconds * <?=$px_per_minute?> / 60)+'px';
+}
+timebarUpdate()
+setInterval(timebarUpdate, 1000)
 </script>

@@ -171,7 +171,7 @@ usort($events, function($a, $b) {return $a->confday - $b->confday;});
                 </td>
             </tr>
         </table>
-        <div id="timebar" style="min-width: 1100px;">.</div>
+        <div id="timebar" style="min-width: 1100px;display:none" >.</div>
     </div>
 </body>
 <script>
@@ -227,7 +227,7 @@ const getDateStuff = function(time){
     dayEvent.offsetParent.offsetTop,
     dayEvent.offsetTop
   )
-  console.log(dayEvent.offsetTop)
+  console.log(confDay, daySeconds, dayOffset)
   return {
     daySeconds: daySeconds,
     dayOffset: dayOffset
@@ -239,9 +239,10 @@ const timebarUpdate = function(){
   let stuff = getDateStuff(now+0)
   if(stuff==null){
     timebar.style.display = "none"
+    return
   }
-  timebar.style.display = "block"
   timebar.style.top = (stuff.dayOffset + stuff.daySeconds * <?=$px_per_minute?> / 60)+'px';
+  timebar.style.display = "block"
 }
 timebarUpdate()
 setInterval(timebarUpdate, 1000)
